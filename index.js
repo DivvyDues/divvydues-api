@@ -1,4 +1,7 @@
 const fastify = require('fastify')({ logger: true });
+const { PrismaClient } = require('@prisma/client');
+
+const prisma = new PrismaClient();
 
 fastify.get('/', async (request, reply) => {
   return { message: "Hello from Fastify!" };
