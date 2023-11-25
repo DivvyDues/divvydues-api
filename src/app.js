@@ -2,7 +2,7 @@ const fastify = require("fastify")({ logger: true });
 const { PrismaClient } = require("@prisma/client");
 const fastifySession = require("@fastify/session");
 const fastifyCookie = require("@fastify/cookie");
-const argon2Plugin = require("./argon2plugin");
+const argon2Plugin = require("./plugins/fastify-argon2");
 
 const prisma = new PrismaClient();
 fastify.register(fastifyCookie);
