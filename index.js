@@ -1,22 +1,24 @@
-const fastify = require('fastify')({ logger: true });
-const { PrismaClient } = require('@prisma/client');
-const argon2Plugin = require('./argon2plugin');
+const fastify = require("fastify")({ logger: true });
+const { PrismaClient } = require("@prisma/client");
+const fastifySession = require("@fastify/session");
+const fastifyCookie = require("@fastify/cookie");
+const argon2Plugin = require("./argon2plugin");
 
 const prisma = new PrismaClient();
-
-//Plugins
-fastify.register(require('@fastify/jwt'), {
-  secret: process.env.JWT_SECRET
-})
+fastify.register(fastifyCookie);
+fastify.register(fastifySession, {
+  cookie: { secure: false }, //TODO mechanism to set to true in prod
+  secret: process.env.SESSION_SECRET,
+});
 
 fastify.register(argon2Plugin);
 
-fastify.get('/', async (request, reply) => {
-  return { message: "Hello from Fastify!" };
+fastify.get("/healthcheck", async (request, reply) => {
+  return { message: "Success" };
 });
 
 // User Registration Endpoint
-fastify.post('/register', async (request, reply) => {
+fastify.post("/register", async (request, reply) => {
   const { username, password } = request.body;
 
   try {
@@ -35,35 +37,41 @@ fastify.post('/register', async (request, reply) => {
 });
 
 // User Login Endpoint
-fastify.post('/login', async (request, reply) => {
+fastify.post("/login", async (request, reply) => {
   const { username, password } = request.body;
 
   try {
     const user = await prisma.user.findUnique({ where: { username } });
-    if (!user) {
-      return reply.status(401).send({ error: 'Invalid username or password' });
+    if (!user || !(await fastify.argon2.verify(user.password, password))) {
+      return reply.status(401).send({ error: "Invalid username or password" });
     }
 
-    const isPasswordValid = await fastify.argon2.verify(user.password, password);
-    if (!isPasswordValid) {
-      return reply.status(401).send({ error: 'Invalid username or password' });
-    }
-
-    const token = fastify.jwt.sign({ userId: user.id }, { expiresIn: '1h' });
-    return { token };
+    // Set up user session
+    request.session.user = { id: user.id, username: user.username };
+    return { message: "Logged in successfully" };
   } catch (error) {
-    reply.status(500).send({ error: error.message }); //TODO remove backend error messages
+    reply.status(500).send({ error: error.message });
   }
+});
+
+// User Logout Endpoint
+fastify.post("/logout", async (request, reply) => {
+  request.session.destroy((err) => {
+    if (err) {
+      return reply.status(500).send({ error: "Failed to log out" });
+    }
+    reply.send({ message: "Logged out successfully" });
+  });
 });
 
 const start = async () => {
   try {
-    await fastify.listen(3000);
+    await fastify.listen({ port: 3000 }); //TODO add mechanism to change port for production
     console.log(`Server is listening on ${fastify.server.address().port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);
   }
-}
+};
 
 start();
