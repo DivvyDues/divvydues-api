@@ -10,7 +10,7 @@ datasource db {
 model User {
   id            Int                 @id @default(autoincrement())
   username      String              @unique
-  password      String              //TODO Password hashing
+  password      String              
   expensesPaid  Expense[]           @relation("Payer")
   expenseSheets ExpenseSheet[]      @relation("ExpenseSheetMembers")
   beneficiaryOf ExpenseBeneficiary[]
