@@ -13,13 +13,97 @@
 					"name": "ExpenseSheets",
 					"item": [
 						{
+							"name": "Expense",
+							"item": [
+								{
+									"name": "GET expenses",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "localhost:3000/expense-sheets/2/expenses",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"expense-sheets",
+												"2",
+												"expenses"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST expenses",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\": \"expense test 3\",\n    \"amount\": 15,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-26\",\n    \"payerId\":7,\n    \"beneficiaryIds\":[7]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "localhost:3000/expense-sheets/2/expenses",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"expense-sheets",
+												"2",
+												"expenses"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "PUT expenses",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"description\": \"expense test 2 modified\",\n    \"amount\": 100,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-25\",\n    \"payerId\":6,\n    \"beneficiaryIds\":[6,7]\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "localhost:3000/expense-sheets/2/expenses/4",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"expense-sheets",
+												"2",
+												"expenses",
+												"4"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
 							"name": "POST /expense-sheets",
 							"request": {
 								"method": "POST",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"title\": \"ex1\"\n}",
+									"raw": "{\n    \"title\": \"sheet test\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -46,7 +130,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"memberIds\": [1,2]\n}",
+									"raw": "{\n    \"memberIds\": [6]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -54,14 +138,14 @@
 									}
 								},
 								"url": {
-									"raw": "localhost:3000/expense-sheets/1/members",
+									"raw": "localhost:3000/expense-sheets/2/members",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
 										"expense-sheets",
-										"1",
+										"2",
 										"members"
 									]
 								}
@@ -116,7 +200,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"name\":\"restaurants\"\n}",
+									"raw": "{\n    \"name\":\"cinema\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -148,7 +232,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\": \"michele1\",\n    \"password\": \"michele1\"\n}",
+									"raw": "{\n    \"username\": \"test\",\n    \"password\": \"test\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -175,7 +259,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\":\"michele\",\n    \"password\":\"michele\"\n}",
+									"raw": "{\n    \"username\":\"test\",\n    \"password\":\"test\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -194,86 +278,20 @@
 								}
 							},
 							"response": []
-						}
-					]
-				},
-				{
-					"name": "Expense",
-					"item": [
-						{
-							"name": "GET expenses",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "localhost:3000/expense-sheets/1/expenses",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"expense-sheets",
-										"1",
-										"expenses"
-									]
-								}
-							},
-							"response": []
 						},
 						{
-							"name": "POST expenses",
+							"name": "logout",
 							"request": {
 								"method": "POST",
 								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"description\": \"expense one\",\n    \"amount\": 500.50,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-27\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1,2]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
 								"url": {
-									"raw": "localhost:3000/expense-sheets/1/expenses",
+									"raw": "localhost:3000/logout",
 									"host": [
 										"localhost"
 									],
 									"port": "3000",
 									"path": [
-										"expense-sheets",
-										"1",
-										"expenses"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "PUT expenses",
-							"request": {
-								"method": "PUT",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"description\": \"expense one redacted\",\n    \"amount\": 502.50,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-28\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1,2,3]\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:3000/expense-sheets/1/expenses/1",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"expense-sheets",
-										"1",
-										"expenses",
-										"1"
+										"logout"
 									]
 								}
 							},
