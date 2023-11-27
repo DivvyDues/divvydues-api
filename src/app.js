@@ -12,18 +12,6 @@ const expenseSheetRoutes = require("./routes/expenseSheets");
 const healthCheckRoutes = require("./routes/healthcheck");
 const authenticationRoutes = require("./routes/authentication");
 const categoryRoutes = require("./routes/categories");
-const expenseRoutes = require("./routes/expenses");
-
-/*
-Plugins will be registered according to fastify docs:
-https://fastify.dev/docs/latest/Guides/Getting-Started/
-
-└── plugins (from the Fastify ecosystem)
-└── your plugins (your custom plugins)
-└── decorators
-└── hooks
-└── your services
-*/
 
 // Register Core plugins
 fastify.register(fastifyCookie);
@@ -47,7 +35,6 @@ fastify.register(healthCheckRoutes);
 fastify.register(authenticationRoutes);
 fastify.register(categoryRoutes);
 fastify.register(expenseSheetRoutes);
-fastify.register(expenseRoutes);
 
 const start = async () => {
   try {
