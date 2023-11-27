@@ -70,7 +70,7 @@ async function expenseSheetRoutes(fastify, options) {
           return reply.status(404).send({ message: "Expense sheet not found" });
         }
 
-        // Check if all beneficiaries are members of the expense sheet
+        // Check if user is member of expense sheet
         const existingMemberIds = expenseSheet.members.map(
           (member) => member.id
         );
