@@ -4,21 +4,23 @@
   "description": "Divvydues project API",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/app.js",
+    "start": "node src/app.js",
+    "start:dev": "nodemon src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Michele Biondi (anacron-sec)",
   "license": "MIT",
   "dependencies": {
+    "@fastify/auth": "^4.4.0",
     "@fastify/cookie": "^9.2.0",
     "@fastify/session": "^10.6.0",
     "@prisma/client": "^5.6.0",
     "argon2": "^0.31.2",
-    "fastify": "^4.24.3",
-    "prisma": "^5.6.0"
+    "fastify": "^4.24.3"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
-    "prettier": "3.1.0"
+    "prettier": "3.1.0",
+    "prisma": "^5.6.0"
   }
 }

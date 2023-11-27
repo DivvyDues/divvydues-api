@@ -2,13 +2,27 @@ const fastify = require("fastify")({ logger: true });
 const { PrismaClient } = require("@prisma/client");
 const fastifySession = require("@fastify/session");
 const fastifyCookie = require("@fastify/cookie");
+const fastifyAuth = require("@fastify/auth");
+
 const argon2Plugin = require("./plugins/fastify-argon2");
+
+const expenseSheetRoutes = require("./routes/expenseSheets");
 
 const prisma = new PrismaClient();
 fastify.register(fastifyCookie);
 fastify.register(fastifySession, {
   cookie: { secure: false }, //TODO mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
+});
+
+fastify.register(fastifyAuth);
+
+fastify.decorate("verifyUserSession", function (request, reply, done) {
+  //TODO Check if there are possible security risk (like a user session reuse after destroy)
+  if (!request.session.user) {
+    return done(new Error("Not authenticated"));
+  }
+  done();
 });
 
 fastify.register(argon2Plugin);
@@ -20,6 +34,7 @@ fastify.get("/healthcheck", async (request, reply) => {
 // User Registration Endpoint
 fastify.post("/register", async (request, reply) => {
   const { username, password } = request.body;
+  //TODO Add rules for secure passwords
 
   try {
     const hashedPassword = await fastify.argon2.hash(password);
@@ -63,6 +78,9 @@ fastify.post("/logout", async (request, reply) => {
     reply.send({ message: "Logged out successfully" });
   });
 });
+
+// Register routes
+fastify.register(expenseSheetRoutes);
 
 const start = async () => {
   try {

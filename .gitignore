@@ -129,7 +129,9 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-# Prisma
+# Prisma local development
 prisma/dev.db
 prisma/dev.db-journal
-prisma/migrations
+
+# Vs Code files
+.vscode
