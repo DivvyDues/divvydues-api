@@ -9,7 +9,7 @@ async function expenseSheetRoutes(fastify, options) {
   // Create Expense Sheet
   fastify.post(
     "/expense-sheets",
-    { preHandler: fastify.auth([fastify.verifyUserSession]) },
+    { onRequest: fastify.auth([fastify.verifyUserSession]) },
     async (request, reply) => {
       const { title } = request.body;
       const userId = request.session.user.id;
@@ -34,7 +34,7 @@ async function expenseSheetRoutes(fastify, options) {
   // List Expense Sheets
   fastify.get(
     "/expense-sheets",
-    { preHandler: fastify.auth([fastify.verifyUserSession]) },
+    { onRequest: fastify.auth([fastify.verifyUserSession]) },
     async (request, reply) => {
       const userId = request.session.user.id;
 
@@ -59,7 +59,7 @@ async function expenseSheetRoutes(fastify, options) {
   // Add Members to Expense Sheet
   fastify.patch(
     "/expense-sheets/:id/members",
-    { preHandler: fastify.auth([fastify.verifyUserSession]) },
+    { onRequest: fastify.auth([fastify.verifyUserSession]) },
     async (request, reply) => {
       const userId = request.session.user.id;
       const { id } = request.params;
