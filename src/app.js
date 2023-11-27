@@ -1,5 +1,4 @@
 const fastify = require("fastify")({ logger: true });
-
 const fastifySession = require("@fastify/session");
 const fastifyCookie = require("@fastify/cookie");
 const fastifyAuth = require("@fastify/auth");
@@ -10,6 +9,7 @@ const expenseSheetRoutes = require("./routes/expenseSheets");
 const healthCheckRoutes = require("./routes/healthcheck");
 const authenticationRoutes = require("./routes/authentication");
 const categoryRoutes = require("./routes/categories");
+const expenseRoutes = require("./routes/expenses");
 
 fastify.register(fastifyCookie);
 fastify.register(fastifySession, {
@@ -20,7 +20,6 @@ fastify.register(fastifySession, {
 fastify.register(fastifyAuth);
 
 // Auth decorators
-
 fastify.decorate("verifyUserSession", function (request, reply, done) {
   //TODO Check if there are possible security risk (like a user session reuse after destroy)
   if (!request.session.user) {
@@ -37,6 +36,7 @@ fastify.register(healthCheckRoutes);
 fastify.register(authenticationRoutes);
 fastify.register(categoryRoutes);
 fastify.register(expenseSheetRoutes);
+fastify.register(expenseRoutes);
 
 const start = async () => {
   try {
