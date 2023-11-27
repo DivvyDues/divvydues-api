@@ -9,6 +9,7 @@ const argon2Plugin = require("./plugins/fastify-argon2");
 const expenseSheetRoutes = require("./routes/expenseSheets");
 const healthCheckRoutes = require("./routes/healthcheck");
 const authenticationRoutes = require("./routes/authentication");
+const categoryRoutes = require("./routes/categories");
 
 fastify.register(fastifyCookie);
 fastify.register(fastifySession, {
@@ -34,6 +35,7 @@ fastify.register(argon2Plugin);
 // Register Routes
 fastify.register(healthCheckRoutes);
 fastify.register(authenticationRoutes);
+fastify.register(categoryRoutes);
 fastify.register(expenseSheetRoutes);
 
 const start = async () => {
