@@ -3,7 +3,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 //TODO Refactor Prisma to use fastify plugin
-//TODO Create more robust checks for endpoints
+//TODO Add schema validation for endpoints
 
 async function expenseSheetRoutes(fastify, options) {
   // Create Expense Sheet
@@ -13,8 +13,6 @@ async function expenseSheetRoutes(fastify, options) {
     async (request, reply) => {
       const { title } = request.body;
       const userId = request.session.user.id;
-
-      console.log("Hello");
 
       try {
         const expenseSheet = await prisma.expenseSheet.create({
@@ -34,6 +32,7 @@ async function expenseSheetRoutes(fastify, options) {
   );
   // List Expense Sheets
   fastify.get("/expense-sheets", async (request, reply) => {
+    //TODO Return only expense sheets for which a user is member from session (and check for auth)
     try {
       const expenseSheets = await prisma.expenseSheet.findMany();
       return expenseSheets;
@@ -44,6 +43,7 @@ async function expenseSheetRoutes(fastify, options) {
 
   // Add Members to Expense Sheet
   fastify.post("/expense-sheets/:id/members", async (request, reply) => {
+    //TODO Check if user is member of expense sheet from session
     const { id } = request.params;
     const { memberIds } = request.body;
 
