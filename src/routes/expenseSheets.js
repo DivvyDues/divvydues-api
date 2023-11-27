@@ -87,6 +87,7 @@ async function expenseSheetRoutes(fastify, options) {
         fastify.verifyUserSession,
         fastify.verifyUserIsExpenseSheetMember,
       ],
+      preHandler: [fastify.verifyPayerAndBeneficiariesAreMembers],
     },
     async (request, reply) => {
       const { expenseSheetId } = request.params;
@@ -94,31 +95,6 @@ async function expenseSheetRoutes(fastify, options) {
         request.body;
 
       try {
-        // Fetch the expense sheet to validate members
-        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
-          where: { id: parseInt(expenseSheetId) },
-          include: { members: true },
-        });
-
-        // Check if all beneficiaries are members of the expense sheet
-        const memberIds = expenseSheet.members.map((member) => member.id);
-        const allBeneficiariesAreMembers = beneficiaryIds.every((id) =>
-          memberIds.includes(id)
-        );
-        const payerIsMember = memberIds.includes(payerId);
-
-        if (!payerIsMember) {
-          return reply.status(400).send({
-            message: "Payer must be a member of the expense sheet",
-          });
-        }
-
-        if (!allBeneficiariesAreMembers) {
-          return reply.status(400).send({
-            message: "All beneficiaries must be members of the expense sheet",
-          });
-        }
-
         // Create the new expense
         const newExpense = await fastify.prisma.expense.create({
           data: {
@@ -179,6 +155,7 @@ async function expenseSheetRoutes(fastify, options) {
         fastify.verifyUserSession,
         fastify.verifyUserIsExpenseSheetMember,
       ],
+      preHandler: [fastify.verifyPayerAndBeneficiariesAreMembers],
     },
     async (request, reply) => {
       const { id, expenseSheetId } = request.params;
@@ -193,26 +170,6 @@ async function expenseSheetRoutes(fastify, options) {
           where: { id: parseInt(expenseSheetId) },
           include: { members: true },
         });
-
-        // Check if all beneficiaries are members of the expense sheet
-        if (beneficiaryIds) {
-          const memberIds = expenseSheet.members.map((member) => member.id);
-          const allBeneficiariesAreMembers = beneficiaryIds.every((id) =>
-            memberIds.includes(id)
-          );
-          const payerIsMember = memberIds.includes(payerId);
-
-          if (!payerIsMember) {
-            return reply.status(400).send({
-              message: "Payer must be a member of the expense sheet",
-            });
-          }
-          if (!allBeneficiariesAreMembers) {
-            return reply.status(400).send({
-              message: "All beneficiaries must be members of the expense sheet",
-            });
-          }
-        }
 
         // Update the expense
         const updatedExpense = await fastify.prisma.expense.update({
