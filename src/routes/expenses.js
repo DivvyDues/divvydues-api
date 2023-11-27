@@ -37,7 +37,7 @@ async function expenseRoutes(fastify, options) {
           data: {
             description,
             amount,
-            categoryId,
+            category: { connect: { id: parseInt(categoryId) } },
             date: new Date(date),
             payer: { connect: { id: payerId } },
             expenseSheet: { connect: { id: parseInt(expenseSheetId) } },
@@ -63,6 +63,14 @@ async function expenseRoutes(fastify, options) {
       try {
         const expenses = await prisma.expense.findMany({
           where: { expenseSheetId: parseInt(expenseSheetId) },
+          include: {
+            beneficiaries: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
+          },
         });
 
         return expenses;
@@ -109,14 +117,12 @@ async function expenseRoutes(fastify, options) {
           data: {
             description,
             amount,
-            categoryId,
+            category: { connect: { id: parseInt(categoryId) } },
             date: new Date(date),
             payer: { connect: { id: payerId } },
-            beneficiaries: beneficiaryIds
-              ? {
-                  set: beneficiaryIds.map((id) => ({ id })),
-                }
-              : undefined,
+            beneficiaries: {
+              set: beneficiaryIds.map((id) => ({ id })),
+            },
           },
         });
 

@@ -196,6 +196,90 @@
 							"response": []
 						}
 					]
+				},
+				{
+					"name": "Expense",
+					"item": [
+						{
+							"name": "GET expenses",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "localhost:3000/expense-sheets/1/expenses",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"expense-sheets",
+										"1",
+										"expenses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "POST expenses",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"expense one\",\n    \"amount\": 500.50,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-27\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1,2]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/expense-sheets/1/expenses",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"expense-sheets",
+										"1",
+										"expenses"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "PUT expenses",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"description\": \"expense one redacted\",\n    \"amount\": 502.50,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-28\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1,2,3]\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "localhost:3000/expense-sheets/1/expenses/1",
+									"host": [
+										"localhost"
+									],
+									"port": "3000",
+									"path": [
+										"expense-sheets",
+										"1",
+										"expenses",
+										"1"
+									]
+								}
+							},
+							"response": []
+						}
+					]
 				}
 			]
 		},
