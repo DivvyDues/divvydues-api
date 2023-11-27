@@ -1,12 +1,12 @@
 const fastify = require("fastify")({ logger: true });
 const fastifySession = require("@fastify/session");
 const fastifyCookie = require("@fastify/cookie");
-const fastifyAuth = require("@fastify/auth");
 
 const fastifyArgon2Plugin = require("./plugins/fastify-argon2");
 const fastifyPrismaPlugin = require("./plugins/fastify-prisma");
 
-const authDecorators = require("./plugins/decorators/auth-decorators");
+const authenticationDecorators = require("./plugins/decorators/authentication");
+const authorizationDecorators = require("./plugins/decorators/authorization");
 
 const expenseSheetRoutes = require("./routes/expenseSheets");
 const healthCheckRoutes = require("./routes/healthcheck");
@@ -19,14 +19,14 @@ fastify.register(fastifySession, {
   cookie: { secure: false }, //TODO mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
 });
-fastify.register(fastifyAuth);
 
 // Register Custom Plugins
 fastify.register(fastifyArgon2Plugin);
 fastify.register(fastifyPrismaPlugin);
 
 // Register Decorators
-fastify.register(authDecorators);
+fastify.register(authenticationDecorators);
+fastify.register(authorizationDecorators);
 
 // Register Hooks
 

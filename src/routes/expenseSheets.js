@@ -4,7 +4,7 @@ async function expenseSheetRoutes(fastify, options) {
   // Create Expense Sheet
   fastify.post(
     "/expense-sheets",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    { onRequest: fastify.verifyUserSession },
     async (request, reply) => {
       const { title } = request.body;
       const userId = request.session.user.id;
@@ -29,7 +29,7 @@ async function expenseSheetRoutes(fastify, options) {
   // List Expense Sheets
   fastify.get(
     "/expense-sheets",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    { onRequest: fastify.verifyUserSession },
     async (request, reply) => {
       const userId = request.session.user.id;
 
@@ -54,33 +54,17 @@ async function expenseSheetRoutes(fastify, options) {
   // Add Members to Expense Sheet
   fastify.patch(
     "/expense-sheets/:expenseSheetId/members",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    {
+      onRequest: [
+        fastify.verifyUserSession,
+        fastify.verifyUserIsExpenseSheetMember,
+      ],
+    },
     async (request, reply) => {
-      const userId = request.session.user.id;
       const { expenseSheetId } = request.params;
       const { memberIds } = request.body;
 
       try {
-        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
-          where: { id: parseInt(expenseSheetId) },
-          include: { members: true },
-        });
-
-        if (!expenseSheet) {
-          return reply.status(404).send({ message: "Expense sheet not found" });
-        }
-
-        // Check if user is member of expense sheet
-        const existingMemberIds = expenseSheet.members.map(
-          (member) => member.id
-        );
-        const userIsMember = existingMemberIds.includes(userId);
-        if (!userIsMember) {
-          return reply
-            .status(403)
-            .send({ message: "User is not a member of the expense sheet" });
-        }
-
         const updatedExpenseSheet = await fastify.prisma.expenseSheet.update({
           where: { id: parseInt(expenseSheetId) },
           data: {
@@ -98,9 +82,13 @@ async function expenseSheetRoutes(fastify, options) {
   );
   fastify.post(
     "/expense-sheets/:expenseSheetId/expenses",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    {
+      onRequest: [
+        fastify.verifyUserSession,
+        fastify.verifyUserIsExpenseSheetMember,
+      ],
+    },
     async (request, reply) => {
-      const userId = request.session.user.id;
       const { expenseSheetId } = request.params;
       const { description, amount, categoryId, date, payerId, beneficiaryIds } =
         request.body;
@@ -112,26 +100,18 @@ async function expenseSheetRoutes(fastify, options) {
           include: { members: true },
         });
 
-        if (!expenseSheet) {
-          return reply.status(404).send({ message: "Expense sheet not found" });
-        }
-
-        // Check if user is member of expense sheet
-        const existingMemberIds = expenseSheet.members.map(
-          (member) => member.id
-        );
-        const userIsMember = existingMemberIds.includes(userId);
-        if (!userIsMember) {
-          return reply
-            .status(403)
-            .send({ message: "User is not a member of the expense sheet" });
-        }
-
         // Check if all beneficiaries are members of the expense sheet
         const memberIds = expenseSheet.members.map((member) => member.id);
         const allBeneficiariesAreMembers = beneficiaryIds.every((id) =>
           memberIds.includes(id)
         );
+        const payerIsMember = memberIds.includes(payerId);
+
+        if (!payerIsMember) {
+          return reply.status(400).send({
+            message: "Payer must be a member of the expense sheet",
+          });
+        }
 
         if (!allBeneficiariesAreMembers) {
           return reply.status(400).send({
@@ -163,33 +143,16 @@ async function expenseSheetRoutes(fastify, options) {
 
   fastify.get(
     "/expense-sheets/:expenseSheetId/expenses",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    {
+      onRequest: [
+        fastify.verifyUserSession,
+        fastify.verifyUserIsExpenseSheetMember,
+      ],
+    },
     async (request, reply) => {
       const { expenseSheetId } = request.params;
-      const userId = request.session.user.id;
 
       try {
-        // Fetch the expense sheet to validate members
-        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
-          where: { id: parseInt(expenseSheetId) },
-          include: { members: true },
-        });
-
-        if (!expenseSheet) {
-          return reply.status(404).send({ message: "Expense sheet not found" });
-        }
-
-        // Check if user is member of expense sheet
-        const existingMemberIds = expenseSheet.members.map(
-          (member) => member.id
-        );
-        const userIsMember = existingMemberIds.includes(userId);
-        if (!userIsMember) {
-          return reply
-            .status(403)
-            .send({ message: "User is not a member of the expense sheet" });
-        }
-
         const expenses = await fastify.prisma.expense.findMany({
           where: { expenseSheetId: parseInt(expenseSheetId) },
           include: {
@@ -211,7 +174,12 @@ async function expenseSheetRoutes(fastify, options) {
 
   fastify.put(
     "/expense-sheets/:expenseSheetId/expenses/:id",
-    { onRequest: fastify.auth([fastify.verifyUserSession]) },
+    {
+      onRequest: [
+        fastify.verifyUserSession,
+        fastify.verifyUserIsExpenseSheetMember,
+      ],
+    },
     async (request, reply) => {
       const { id, expenseSheetId } = request.params;
       const { description, amount, categoryId, date, payerId, beneficiaryIds } =
@@ -226,27 +194,19 @@ async function expenseSheetRoutes(fastify, options) {
           include: { members: true },
         });
 
-        if (!expenseSheet) {
-          return reply.status(404).send({ message: "Expense sheet not found" });
-        }
-
-        // Check if user is member of expense sheet
-        const existingMemberIds = expenseSheet.members.map(
-          (member) => member.id
-        );
-        const userIsMember = existingMemberIds.includes(userId);
-        if (!userIsMember) {
-          return reply
-            .status(403)
-            .send({ message: "User is not a member of the expense sheet" });
-        }
-
         // Check if all beneficiaries are members of the expense sheet
         if (beneficiaryIds) {
           const memberIds = expenseSheet.members.map((member) => member.id);
           const allBeneficiariesAreMembers = beneficiaryIds.every((id) =>
             memberIds.includes(id)
           );
+          const payerIsMember = memberIds.includes(payerId);
+
+          if (!payerIsMember) {
+            return reply.status(400).send({
+              message: "Payer must be a member of the expense sheet",
+            });
+          }
           if (!allBeneficiariesAreMembers) {
             return reply.status(400).send({
               message: "All beneficiaries must be members of the expense sheet",
