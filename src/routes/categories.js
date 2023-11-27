@@ -1,6 +1,3 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 //TODO Add a strategy to which users are allowed to create categories
 
 async function categoryRoutes(fastify, options) {
@@ -8,7 +5,7 @@ async function categoryRoutes(fastify, options) {
     const { name } = request.body;
 
     try {
-      const category = await prisma.category.create({
+      const category = await fastify.prisma.category.create({
         data: { name },
       });
 
@@ -20,7 +17,7 @@ async function categoryRoutes(fastify, options) {
 
   fastify.get("/categories", async (request, reply) => {
     try {
-      const categories = await prisma.category.findMany();
+      const categories = await fastify.prisma.category.findMany();
       return categories;
     } catch (error) {
       reply.status(500).send({ error: error.message }); //TODO remove backend error messages

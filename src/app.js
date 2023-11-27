@@ -3,7 +3,8 @@ const fastifySession = require("@fastify/session");
 const fastifyCookie = require("@fastify/cookie");
 const fastifyAuth = require("@fastify/auth");
 
-const argon2Plugin = require("./plugins/fastify-argon2");
+const fastifyArgon2Plugin = require("./plugins/fastify-argon2");
+const fastifyPrismaPlugin = require("./plugins/fastify-prisma");
 
 const expenseSheetRoutes = require("./routes/expenseSheets");
 const healthCheckRoutes = require("./routes/healthcheck");
@@ -29,7 +30,8 @@ fastify.decorate("verifyUserSession", function (request, reply, done) {
 });
 
 // Register Custom Plugins
-fastify.register(argon2Plugin);
+fastify.register(fastifyArgon2Plugin);
+fastify.register(fastifyPrismaPlugin);
 
 // Register Routes
 fastify.register(healthCheckRoutes);

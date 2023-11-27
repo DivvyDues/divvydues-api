@@ -1,8 +1,3 @@
-const { PrismaClient } = require("@prisma/client");
-
-const prisma = new PrismaClient();
-
-//TODO Refactor Prisma to use fastify plugin
 //TODO Add schema validation for endpoints
 
 async function expenseSheetRoutes(fastify, options) {
@@ -15,7 +10,7 @@ async function expenseSheetRoutes(fastify, options) {
       const userId = request.session.user.id;
 
       try {
-        const expenseSheet = await prisma.expenseSheet.create({
+        const expenseSheet = await fastify.prisma.expenseSheet.create({
           data: {
             title,
             members: {
@@ -39,7 +34,7 @@ async function expenseSheetRoutes(fastify, options) {
       const userId = request.session.user.id;
 
       try {
-        const expenseSheets = await prisma.expenseSheet.findMany({
+        const expenseSheets = await fastify.prisma.expenseSheet.findMany({
           where: {
             members: {
               some: {
@@ -66,7 +61,7 @@ async function expenseSheetRoutes(fastify, options) {
       const { memberIds } = request.body;
 
       try {
-        const expenseSheet = await prisma.expenseSheet.findUnique({
+        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
           where: { id: parseInt(id) },
           include: { members: true },
         });
@@ -86,7 +81,7 @@ async function expenseSheetRoutes(fastify, options) {
             .send({ message: "User is not a member of the expense sheet" });
         }
 
-        const updatedExpenseSheet = await prisma.expenseSheet.update({
+        const updatedExpenseSheet = await fastify.prisma.expenseSheet.update({
           where: { id: parseInt(id) },
           data: {
             members: {

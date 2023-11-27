@@ -1,6 +1,3 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 async function expenseRoutes(fastify, options) {
   fastify.post(
     "/expense-sheets/:expenseSheetId/expenses",
@@ -11,7 +8,7 @@ async function expenseRoutes(fastify, options) {
 
       try {
         // Fetch the expense sheet to validate members
-        const expenseSheet = await prisma.expenseSheet.findUnique({
+        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
           where: { id: parseInt(expenseSheetId) },
           include: { members: true },
         });
@@ -33,7 +30,7 @@ async function expenseRoutes(fastify, options) {
         }
 
         // Create the new expense
-        const newExpense = await prisma.expense.create({
+        const newExpense = await fastify.prisma.expense.create({
           data: {
             description,
             amount,
@@ -61,7 +58,7 @@ async function expenseRoutes(fastify, options) {
       const { expenseSheetId } = request.params;
 
       try {
-        const expenses = await prisma.expense.findMany({
+        const expenses = await fastify.prisma.expense.findMany({
           where: { expenseSheetId: parseInt(expenseSheetId) },
           include: {
             beneficiaries: {
@@ -89,7 +86,7 @@ async function expenseRoutes(fastify, options) {
 
       try {
         // Fetch the expense sheet to validate members and payer
-        const expenseSheet = await prisma.expenseSheet.findUnique({
+        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
           where: { id: parseInt(expenseSheetId) },
           include: { members: true },
         });
@@ -112,7 +109,7 @@ async function expenseRoutes(fastify, options) {
         }
 
         // Update the expense
-        const updatedExpense = await prisma.expense.update({
+        const updatedExpense = await fastify.prisma.expense.update({
           where: { id: parseInt(id) },
           data: {
             description,

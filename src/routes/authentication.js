@@ -1,6 +1,3 @@
-const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient();
-
 async function authenticationRoutes(fastify, options) {
   fastify.post("/register", async (request, reply) => {
     const { username, password } = request.body;
@@ -8,7 +5,7 @@ async function authenticationRoutes(fastify, options) {
 
     try {
       const hashedPassword = await fastify.argon2.hash(password);
-      const user = await prisma.user.create({
+      const user = await fastify.prisma.user.create({
         data: {
           username,
           password: hashedPassword,
@@ -26,7 +23,9 @@ async function authenticationRoutes(fastify, options) {
     const { username, password } = request.body;
 
     try {
-      const user = await prisma.user.findUnique({ where: { username } });
+      const user = await fastify.prisma.user.findUnique({
+        where: { username },
+      });
       if (!user || !(await fastify.argon2.verify(user.password, password))) {
         return reply
           .status(401)
