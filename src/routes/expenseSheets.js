@@ -30,38 +30,77 @@ async function expenseSheetRoutes(fastify, options) {
       }
     }
   );
+
   // List Expense Sheets
-  fastify.get("/expense-sheets", async (request, reply) => {
-    //TODO Return only expense sheets for which a user is member from session (and check for auth)
-    try {
-      const expenseSheets = await prisma.expenseSheet.findMany();
-      return expenseSheets;
-    } catch (error) {
-      reply.status(500).send({ error: error.message });
+  fastify.get(
+    "/expense-sheets",
+    { preHandler: fastify.auth([fastify.verifyUserSession]) },
+    async (request, reply) => {
+      const userId = request.session.user.id;
+
+      try {
+        const expenseSheets = await prisma.expenseSheet.findMany({
+          where: {
+            members: {
+              some: {
+                id: userId,
+              },
+            },
+          },
+        });
+
+        return expenseSheets;
+      } catch (error) {
+        reply.status(500).send({ error: error.message });
+      }
     }
-  });
+  );
 
   // Add Members to Expense Sheet
-  fastify.post("/expense-sheets/:id/members", async (request, reply) => {
-    //TODO Check if user is member of expense sheet from session
-    const { id } = request.params;
-    const { memberIds } = request.body;
+  fastify.patch(
+    "/expense-sheets/:id/members",
+    { preHandler: fastify.auth([fastify.verifyUserSession]) },
+    async (request, reply) => {
+      const userId = request.session.user.id;
+      const { id } = request.params;
+      const { memberIds } = request.body;
 
-    try {
-      const updatedExpenseSheet = await prisma.expenseSheet.update({
-        where: { id: parseInt(id) },
-        data: {
-          members: {
-            connect: memberIds.map((userId) => ({ id: userId })),
+      try {
+        const expenseSheet = await prisma.expenseSheet.findUnique({
+          where: { id: parseInt(id) },
+          include: { members: true },
+        });
+
+        if (!expenseSheet) {
+          return reply.status(404).send({ message: "Expense sheet not found" });
+        }
+
+        // Check if all beneficiaries are members of the expense sheet
+        const existingMemberIds = expenseSheet.members.map(
+          (member) => member.id
+        );
+        const userIsMember = existingMemberIds.includes(userId);
+        if (!userIsMember) {
+          return reply
+            .status(403)
+            .send({ message: "User is not a member of the expense sheet" });
+        }
+
+        const updatedExpenseSheet = await prisma.expenseSheet.update({
+          where: { id: parseInt(id) },
+          data: {
+            members: {
+              connect: memberIds.map((userId) => ({ id: userId })),
+            },
           },
-        },
-      });
+        });
 
-      return updatedExpenseSheet;
-    } catch (error) {
-      reply.status(500).send({ error: error.message });
+        return updatedExpenseSheet;
+      } catch (error) {
+        reply.status(500).send({ error: error.message });
+      }
     }
-  });
+  );
 }
 
 module.exports = expenseSheetRoutes;

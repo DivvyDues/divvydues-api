@@ -40,13 +40,13 @@
 							"response": []
 						},
 						{
-							"name": "POST /expense-sheets Copy",
+							"name": "PATCH /expense-sheets Members",
 							"request": {
-								"method": "POST",
+								"method": "PATCH",
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"memberIds\": [1]\n}",
+									"raw": "{\n    \"memberIds\": [1,2]\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -148,7 +148,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"username\": \"michele3\",\n    \"password\": \"michele3\"\n}",
+									"raw": "{\n    \"username\": \"michele1\",\n    \"password\": \"michele1\"\n}",
 									"options": {
 										"raw": {
 											"language": "json"
