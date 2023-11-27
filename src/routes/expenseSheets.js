@@ -53,16 +53,16 @@ async function expenseSheetRoutes(fastify, options) {
 
   // Add Members to Expense Sheet
   fastify.patch(
-    "/expense-sheets/:id/members",
+    "/expense-sheets/:expenseSheetId/members",
     { onRequest: fastify.auth([fastify.verifyUserSession]) },
     async (request, reply) => {
       const userId = request.session.user.id;
-      const { id } = request.params;
+      const { expenseSheetId } = request.params;
       const { memberIds } = request.body;
 
       try {
         const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
-          where: { id: parseInt(id) },
+          where: { id: parseInt(expenseSheetId) },
           include: { members: true },
         });
 
@@ -82,7 +82,7 @@ async function expenseSheetRoutes(fastify, options) {
         }
 
         const updatedExpenseSheet = await fastify.prisma.expenseSheet.update({
-          where: { id: parseInt(id) },
+          where: { id: parseInt(expenseSheetId) },
           data: {
             members: {
               connect: memberIds.map((userId) => ({ id: userId })),
