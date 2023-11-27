@@ -54,21 +54,33 @@ async function expenseSheetRoutes(fastify, options) {
   // Add Members to Expense Sheet
   fastify.patch(
     "/expense-sheets/:expenseSheetId/members",
-    {
-      onRequest: fastify.auth(
-        [fastify.verifyUserSession, fastify.verifyUserExpenseSheetMembership],
-        {
-          relation: "and",
-          run: "all",
-        }
-      ),
-    },
+    { onRequest: fastify.auth([fastify.verifyUserSession]) },
     async (request, reply) => {
       const userId = request.session.user.id;
       const { expenseSheetId } = request.params;
       const { memberIds } = request.body;
 
       try {
+        const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
+          where: { id: parseInt(expenseSheetId) },
+          include: { members: true },
+        });
+
+        if (!expenseSheet) {
+          return reply.status(404).send({ message: "Expense sheet not found" });
+        }
+
+        // Check if user is member of expense sheet
+        const existingMemberIds = expenseSheet.members.map(
+          (member) => member.id
+        );
+        const userIsMember = existingMemberIds.includes(userId);
+        if (!userIsMember) {
+          return reply
+            .status(403)
+            .send({ message: "User is not a member of the expense sheet" });
+        }
+
         const updatedExpenseSheet = await fastify.prisma.expenseSheet.update({
           where: { id: parseInt(expenseSheetId) },
           data: {
