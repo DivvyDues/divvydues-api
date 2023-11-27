@@ -7,6 +7,7 @@ const fastifyAuth = require("@fastify/auth");
 const argon2Plugin = require("./plugins/fastify-argon2");
 
 const expenseSheetRoutes = require("./routes/expenseSheets");
+const healthCheckRoutes = require("./routes/healthcheck");
 
 const prisma = new PrismaClient();
 fastify.register(fastifyCookie);
@@ -27,9 +28,7 @@ fastify.decorate("verifyUserSession", function (request, reply, done) {
 
 fastify.register(argon2Plugin);
 
-fastify.get("/healthcheck", async (request, reply) => {
-  return { message: "Success" };
-});
+fastify.register(healthCheckRoutes);
 
 // User Registration Endpoint
 fastify.post("/register", async (request, reply) => {
