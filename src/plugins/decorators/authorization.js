@@ -1,6 +1,8 @@
 // Auth decorators
 const fp = require("fastify-plugin");
 
+const ERROR_MESSAGE = "User is not a member of the expense sheet";
+
 async function authorizationDecorators(fastify, options) {
   fastify
     .decorate(
@@ -9,7 +11,6 @@ async function authorizationDecorators(fastify, options) {
         const userId = request.session.user.id;
         const { expenseSheetId } = request.params;
         // Use same message to avoid information leakage
-        const ERROR_MESSAGE = "User is not a member of the expense sheet";
 
         const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
           where: { id: parseInt(expenseSheetId) },
@@ -42,6 +43,11 @@ async function authorizationDecorators(fastify, options) {
           where: { id: parseInt(expenseSheetId) },
           include: { members: true },
         });
+
+        if (!expenseSheet) {
+          reply.code(403);
+          throw new Error(ERROR_MESSAGE);
+        }
 
         // Check if all beneficiaries are members of the expense sheet
         if (beneficiaryIds) {
