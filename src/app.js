@@ -1,40 +1,30 @@
+require("dotenv").config();
 const fastify = require("fastify")({ logger: true });
-const fastifySession = require("@fastify/session");
-const fastifyCookie = require("@fastify/cookie");
-
-const fastifyArgon2Plugin = require("./plugins/fastify-argon2");
-const fastifyPrismaPlugin = require("./plugins/fastify-prisma");
-
-const authenticationDecorators = require("./plugins/decorators/authentication");
-const authorizationDecorators = require("./plugins/decorators/authorization");
-
-const expenseSheetRoutes = require("./routes/expenseSheets");
-const healthCheckRoutes = require("./routes/healthcheck");
-const authenticationRoutes = require("./routes/authentication");
-const categoryRoutes = require("./routes/categories");
 
 // Register Core plugins
-fastify.register(fastifyCookie);
-fastify.register(fastifySession, {
+fastify.register(require("@fastify/cookie"));
+fastify.register(require("@fastify/session"), {
   cookie: { secure: false }, //TODO mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
 });
+//TODO Add fastify-helmet?
+//TODO Add fastify
 
 // Register Custom Plugins
-fastify.register(fastifyArgon2Plugin);
-fastify.register(fastifyPrismaPlugin);
+fastify.register(require("./plugins/fastify-argon2"));
+fastify.register(require("./plugins/fastify-prisma"));
 
 // Register Decorators
-fastify.register(authenticationDecorators);
-fastify.register(authorizationDecorators);
+fastify.register(require("./plugins/decorators/authentication"));
+fastify.register(require("./plugins/decorators/authorization"));
 
 // Register Hooks
 
 // Register Routes
-fastify.register(healthCheckRoutes);
-fastify.register(authenticationRoutes);
-fastify.register(categoryRoutes);
-fastify.register(expenseSheetRoutes);
+fastify.register(require("./routes/healthcheck"));
+fastify.register(require("./routes/authentication"));
+fastify.register(require("./routes/categories"));
+fastify.register(require("./routes/expenseSheets"));
 
 const start = async () => {
   try {
