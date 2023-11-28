@@ -5,6 +5,7 @@ const fastify = require("fastify")({ logger: true });
 fastify.register(require("@fastify/helmet", { global: true }));
 fastify.register(require("@fastify/cookie"));
 fastify.register(require("@fastify/session"), {
+  //TODO Use Redis for production code
   cookie: { secure: false }, //TODO mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
 });
