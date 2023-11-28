@@ -12,17 +12,11 @@ CREATE TABLE "Expense" (
     "amount" REAL NOT NULL,
     "date" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "payerId" INTEGER NOT NULL,
-    "categoryId" INTEGER NOT NULL,
+    "expenseSheetCategoryId" INTEGER NOT NULL,
     "expenseSheetId" INTEGER NOT NULL,
     CONSTRAINT "Expense_payerId_fkey" FOREIGN KEY ("payerId") REFERENCES "User" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
-    CONSTRAINT "Expense_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
+    CONSTRAINT "Expense_expenseSheetCategoryId_fkey" FOREIGN KEY ("expenseSheetCategoryId") REFERENCES "ExpenseSheetCategory" ("id") ON DELETE RESTRICT ON UPDATE CASCADE,
     CONSTRAINT "Expense_expenseSheetId_fkey" FOREIGN KEY ("expenseSheetId") REFERENCES "ExpenseSheet" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
-);
-
--- CreateTable
-CREATE TABLE "Category" (
-    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -30,6 +24,20 @@ CREATE TABLE "ExpenseSheet" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "title" TEXT NOT NULL,
     "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- CreateTable
+CREATE TABLE "ExpenseSheetCategory" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL,
+    "expenseSheetId" INTEGER NOT NULL,
+    CONSTRAINT "ExpenseSheetCategory_expenseSheetId_fkey" FOREIGN KEY ("expenseSheetId") REFERENCES "ExpenseSheet" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
+);
+
+-- CreateTable
+CREATE TABLE "DefaultCategory" (
+    "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    "name" TEXT NOT NULL
 );
 
 -- CreateTable
@@ -52,7 +60,7 @@ CREATE TABLE "_ExpenseSheetMember" (
 CREATE UNIQUE INDEX "User_username_key" ON "User"("username");
 
 -- CreateIndex
-CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
+CREATE UNIQUE INDEX "DefaultCategory_name_key" ON "DefaultCategory"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "_ExpenseBeneficiary_AB_unique" ON "_ExpenseBeneficiary"("A", "B");

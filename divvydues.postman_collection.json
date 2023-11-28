@@ -42,7 +42,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"description\": \"expense test 3\",\n    \"amount\": 15,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-26\",\n    \"payerId\":7,\n    \"beneficiaryIds\":[7]\n}",
+											"raw": "{\n    \"description\": \"expense test 1\",\n    \"amount\": 15,\n    \"expenseSheetCategoryId\": 1,\n    \"date\":\"2023-11-26\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1]\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -71,7 +71,7 @@
 										"header": [],
 										"body": {
 											"mode": "raw",
-											"raw": "{\n    \"description\": \"expense test 2 modified\",\n    \"amount\": 100,\n    \"categoryId\": 1,\n    \"date\":\"2023-11-25\",\n    \"payerId\":6,\n    \"beneficiaryIds\":[6,7]\n}",
+											"raw": "{\n    \"description\": \"expense test 1 modified\",\n    \"amount\": 100,\n    \"expenseSheetCategoryId\": 2,\n    \"date\":\"2023-11-25\",\n    \"payerId\":1,\n    \"beneficiaryIds\":[1]\n}",
 											"options": {
 												"raw": {
 													"language": "json"
@@ -79,7 +79,7 @@
 											}
 										},
 										"url": {
-											"raw": "localhost:3000/expense-sheets/2/expenses/4",
+											"raw": "localhost:3000/expense-sheets/2/expenses/1",
 											"host": [
 												"localhost"
 											],
@@ -88,7 +88,7 @@
 												"expense-sheets",
 												"2",
 												"expenses",
-												"4"
+												"1"
 											]
 										}
 									},
@@ -130,7 +130,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\n    \"memberIds\": [6]\n}",
+									"raw": "{\n    \"memberIds\": [1]\n}",
 									"options": {
 										"raw": {
 											"language": "json"

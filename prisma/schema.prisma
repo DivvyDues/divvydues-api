@@ -17,29 +17,37 @@ model User {
 }
 
 model Expense {
-  id             Int                 @id @default(autoincrement())
-  description    String
-  amount         Float
-  date           DateTime            @default(now())
-  payerId        Int
-  payer          User                @relation(name: "ExpensePayer", fields: [payerId], references: [id])
-  categoryId     Int
-  category       Category            @relation(fields: [categoryId], references: [id])
-  expenseSheetId Int
-  expenseSheet   ExpenseSheet        @relation(fields: [expenseSheetId], references: [id])
-  beneficiaries  User[]              @relation("ExpenseBeneficiary")
-}
-
-model Category {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  expenses  Expense[]
+  id                  Int                   @id @default(autoincrement())
+  description         String
+  amount              Float
+  date                DateTime              @default(now())
+  payerId             Int
+  payer               User                  @relation(name: "ExpensePayer", fields: [payerId], references: [id])
+  expenseSheetCategoryId Int
+  expenseSheetCategory ExpenseSheetCategory @relation(fields: [expenseSheetCategoryId], references: [id])
+  expenseSheetId      Int
+  expenseSheet        ExpenseSheet          @relation(fields: [expenseSheetId], references: [id])
+  beneficiaries       User[]                @relation("ExpenseBeneficiary")
 }
 
 model ExpenseSheet {
-  id          Int        @id @default(autoincrement())
+  id          Int                   @id @default(autoincrement())
   title       String
-  createdAt   DateTime   @default(now())
-  members     User[]     @relation("ExpenseSheetMember")
+  createdAt   DateTime              @default(now())
+  members     User[]                @relation("ExpenseSheetMember")
   expenses    Expense[]
+  categories  ExpenseSheetCategory[]
+}
+
+model ExpenseSheetCategory {
+  id            Int         @id @default(autoincrement())
+  name          String
+  expenseSheet  ExpenseSheet  @relation(fields: [expenseSheetId], references: [id])
+  expenseSheetId Int
+  expenses      Expense[]
+}
+
+model DefaultCategory {
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
 }

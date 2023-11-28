@@ -19,6 +19,17 @@ async function expenseSheetRoutes(fastify, options) {
           },
         });
 
+        // Populate expense sheet with default categories
+        const defaultCategory = await fastify.prisma.defaultCategory.findMany();
+        for (const category of defaultCategory) {
+          await fastify.prisma.expenseSheetCategory.create({
+            data: {
+              name: category.name,
+              expenseSheet: { connect: { id: parseInt(expenseSheet.id) } },
+            },
+          });
+        }
+
         return expenseSheet;
       } catch (error) {
         reply.status(500).send({ error: error.message });
@@ -76,7 +87,11 @@ async function expenseSheetRoutes(fastify, options) {
 
         return updatedExpenseSheet;
       } catch (error) {
-        reply.status(500).send({ error: error.message });
+        if (error.code === "P2025") {
+          reply.status(400).send({ error: "Invalid members provided" });
+        } else {
+          reply.status(500).send({ error });
+        }
       }
     }
   );
@@ -91,8 +106,14 @@ async function expenseSheetRoutes(fastify, options) {
     },
     async (request, reply) => {
       const { expenseSheetId } = request.params;
-      const { description, amount, categoryId, date, payerId, beneficiaryIds } =
-        request.body;
+      const {
+        description,
+        amount,
+        expenseSheetCategoryId,
+        date,
+        payerId,
+        beneficiaryIds,
+      } = request.body;
 
       try {
         // Create the new expense
@@ -100,7 +121,9 @@ async function expenseSheetRoutes(fastify, options) {
           data: {
             description,
             amount,
-            category: { connect: { id: parseInt(categoryId) } },
+            expenseSheetCategory: {
+              connect: { id: parseInt(expenseSheetCategoryId) },
+            },
             date: new Date(date),
             payer: { connect: { id: payerId } },
             expenseSheet: { connect: { id: parseInt(expenseSheetId) } },
@@ -159,8 +182,14 @@ async function expenseSheetRoutes(fastify, options) {
     },
     async (request, reply) => {
       const { id, expenseSheetId } = request.params;
-      const { description, amount, categoryId, date, payerId, beneficiaryIds } =
-        request.body;
+      const {
+        description,
+        amount,
+        expenseSheetCategoryId,
+        date,
+        payerId,
+        beneficiaryIds,
+      } = request.body;
 
       const userId = request.session.user.id;
 
@@ -177,7 +206,9 @@ async function expenseSheetRoutes(fastify, options) {
           data: {
             description,
             amount,
-            category: { connect: { id: parseInt(categoryId) } },
+            expenseSheetCategory: {
+              connect: { id: parseInt(expenseSheetCategoryId) },
+            },
             date: new Date(date),
             payer: { connect: { id: payerId } },
             beneficiaries: {
