@@ -2,7 +2,7 @@ require("dotenv").config(); //TODO Research safer alternatives for production co
 const fastify = require("fastify")({ logger: true });
 
 // Register Core plugins
-fastify.register(require("@fastify/helmet", { global: true }));
+fastify.register(require("@fastify/helmet", { global: true })); //TODO Set appropriate rules for REST API
 fastify.register(require("@fastify/cookie"));
 fastify.register(require("@fastify/session"), {
   //TODO Use Redis for production code
