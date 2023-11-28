@@ -4,7 +4,7 @@ async function expenseSheetRoutes(fastify, options) {
   // Create Expense Sheet
   fastify.post(
     "/expense-sheets",
-    { onRequest: fastify.verifyUserSession },
+    { onRequest: [fastify.verifyUserSession, fastify.csrfProtection] },
     async (request, reply) => {
       const { title } = request.body;
       const userId = request.session.user.id;
@@ -40,7 +40,7 @@ async function expenseSheetRoutes(fastify, options) {
   // List Expense Sheets
   fastify.get(
     "/expense-sheets",
-    { onRequest: fastify.verifyUserSession },
+    { onRequest: [fastify.verifyUserSession, fastify.csrfProtection] },
     async (request, reply) => {
       const userId = request.session.user.id;
 
@@ -68,6 +68,7 @@ async function expenseSheetRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
     },
@@ -100,6 +101,7 @@ async function expenseSheetRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
       preHandler: [fastify.verifyPayerAndBeneficiariesAreMembers],
@@ -145,6 +147,7 @@ async function expenseSheetRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
     },
@@ -176,6 +179,7 @@ async function expenseSheetRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
       preHandler: [fastify.verifyPayerAndBeneficiariesAreMembers],

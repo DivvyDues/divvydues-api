@@ -34,7 +34,8 @@ async function authenticationRoutes(fastify, options) {
 
       // Set up user session
       request.session.user = { id: user.id, username: user.username };
-      return { message: "Logged in successfully" };
+      const csrfToken = await reply.generateCsrf();
+      return { csrfToken };
     } catch (error) {
       reply.status(500).send({ error: error.message });
     }

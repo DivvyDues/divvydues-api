@@ -4,6 +4,7 @@ async function expenseSheetGategoryRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
     },
@@ -35,6 +36,7 @@ async function expenseSheetGategoryRoutes(fastify, options) {
     {
       onRequest: [
         fastify.verifyUserSession,
+        fastify.csrfProtection,
         fastify.verifyUserIsExpenseSheetMember,
       ],
     },

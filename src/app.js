@@ -2,13 +2,15 @@ require("dotenv").config();
 const fastify = require("fastify")({ logger: true });
 
 // Register Core plugins
+fastify.register(require("@fastify/helmet", { global: true }));
 fastify.register(require("@fastify/cookie"));
 fastify.register(require("@fastify/session"), {
   cookie: { secure: false }, //TODO mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
 });
-//TODO Add fastify-helmet?
-//TODO Add fastify
+fastify.register(require("@fastify/csrf-protection"), {
+  sessionPlugin: "@fastify/session",
+});
 
 // Register Custom Plugins
 fastify.register(require("./plugins/fastify-argon2"));
