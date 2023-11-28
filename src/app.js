@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config(); //TODO Research safer alternatives for production code
 const fastify = require("fastify")({ logger: true });
 
 // Register Core plugins
