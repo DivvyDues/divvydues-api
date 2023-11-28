@@ -23,8 +23,8 @@ fastify.register(require("./plugins/decorators/authorization"));
 // Register Routes
 fastify.register(require("./routes/healthcheck"));
 fastify.register(require("./routes/authentication"));
-fastify.register(require("./routes/categories"));
-fastify.register(require("./routes/expenseSheets"));
+fastify.register(require("./routes/expenseSheets/expenseSheetsCategories"));
+fastify.register(require("./routes/expenseSheets/expenseSheets"));
 
 const start = async () => {
   try {

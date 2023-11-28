@@ -97,6 +97,60 @@
 							]
 						},
 						{
+							"name": "Categories",
+							"item": [
+								{
+									"name": "GET Categories",
+									"request": {
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "localhost:3000/expense-sheets/2/categories",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"expense-sheets",
+												"2",
+												"categories"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "POST Categories",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"name\":\"School\"\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "localhost:3000/expense-sheets/2/categories",
+											"host": [
+												"localhost"
+											],
+											"port": "3000",
+											"path": [
+												"expense-sheets",
+												"2",
+												"categories"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
 							"name": "POST /expense-sheets",
 							"request": {
 								"method": "POST",
@@ -165,56 +219,6 @@
 									"port": "3000",
 									"path": [
 										"expense-sheets"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Categories",
-					"item": [
-						{
-							"name": "GET Categories",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "localhost:3000/categories",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"categories"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "POST Categories",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n    \"name\":\"cinema\"\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "localhost:3000/categories",
-									"host": [
-										"localhost"
-									],
-									"port": "3000",
-									"path": [
-										"categories"
 									]
 								}
 							},
