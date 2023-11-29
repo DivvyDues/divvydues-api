@@ -5,6 +5,7 @@ dotenv.config(); // Research safer alternatives for production code
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import Fastify from "fastify";
+import Sensible from "@fastify/sensible";
 import Autoload from "@fastify/autoload";
 import Helmet from "@fastify/helmet";
 import Cookie from "@fastify/cookie";
@@ -19,6 +20,7 @@ const __dirname = dirname(__filename);
 const fastify = Fastify({ logger: true });
 
 // Register Core plugins
+fastify.register(Sensible);
 fastify.register(Helmet, { global: true }); // Set appropriate rules for REST API
 fastify.register(Cookie);
 fastify.register(Session, {
