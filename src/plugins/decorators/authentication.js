@@ -1,15 +1,9 @@
-// Auth decorators
 import fp from "fastify-plugin";
 
-async function authenticationDecorators(fastify, options) {
-  fastify.decorate("verifyUserSession", function (request, reply, done) {
+export default fp(async function authenticationDecorators(fastify, options) {
+  fastify.decorate("verifyUserSession", async function (request, reply) {
     if (!request.session.user) {
-      reply.code(401);
-      return done(new Error("Not authenticated"));
+      return reply.unauthorized("Not authenticated");
     }
-
-    done();
   });
-}
-
-export default fp(authenticationDecorators);
+});
