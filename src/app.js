@@ -2,7 +2,6 @@
 import dotenv from "dotenv";
 dotenv.config(); // Research safer alternatives for production code
 
-import path from "path";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import Fastify from "fastify";
