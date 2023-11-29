@@ -25,10 +25,6 @@ fastify.register(autoload, {
   routeParams: true,
 });
 
-fastify.ready(() => {
-  console.log(fastify.printRoutes());
-});
-
 const start = async () => {
   try {
     await fastify.listen({ port: 3000 }); //TODO add mechanism to change port for production
