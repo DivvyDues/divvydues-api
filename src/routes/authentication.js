@@ -1,4 +1,4 @@
-async function authenticationRoutes(fastify, options) {
+module.exports = async function (fastify, options) {
   fastify.post("/register", async (request, reply) => {
     const { username, password } = request.body;
     //TODO Add rules for secure passwords
@@ -50,6 +50,4 @@ async function authenticationRoutes(fastify, options) {
       reply.send({ message: "Logged out successfully" });
     });
   });
-}
-
-module.exports = authenticationRoutes;
+};

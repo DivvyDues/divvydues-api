@@ -1,4 +1,4 @@
-async function expenseSheetGategoryRoutes(fastify, options) {
+module.exports = async function (fastify, options) {
   fastify.post(
     "/expense-sheets/:expenseSheetId/categories",
     {
@@ -53,6 +53,4 @@ async function expenseSheetGategoryRoutes(fastify, options) {
       }
     }
   );
-}
-
-module.exports = expenseSheetGategoryRoutes;
+};

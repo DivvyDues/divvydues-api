@@ -1,5 +1,8 @@
 require("dotenv").config(); //TODO Research safer alternatives for production code
+const path = require("path");
+
 const fastify = require("fastify")({ logger: true });
+const autoload = require("@fastify/autoload");
 
 // Register Core plugins
 fastify.register(require("@fastify/helmet", { global: true })); //TODO Set appropriate rules for REST API
@@ -13,21 +16,14 @@ fastify.register(require("@fastify/csrf-protection"), {
   sessionPlugin: "@fastify/session",
 });
 
-// Register Custom Plugins
-fastify.register(require("./plugins/fastify-argon2"));
-fastify.register(require("./plugins/fastify-prisma"));
+fastify.register(autoload, {
+  dir: path.join(__dirname, "plugins"),
+});
 
-// Register Decorators
-fastify.register(require("./plugins/decorators/authentication"));
-fastify.register(require("./plugins/decorators/authorization"));
-
-// Register Hooks
-
-// Register Routes
-fastify.register(require("./routes/healthcheck"));
-fastify.register(require("./routes/authentication"));
-fastify.register(require("./routes/expenseSheets/expenseSheetsCategories"));
-fastify.register(require("./routes/expenseSheets/expenseSheets"));
+fastify.register(autoload, {
+  dir: path.join(__dirname, "routes"),
+  dirNameRoutePrefix: false,
+});
 
 const start = async () => {
   try {
