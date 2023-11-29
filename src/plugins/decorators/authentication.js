@@ -1,5 +1,5 @@
 // Auth decorators
-const fp = require("fastify-plugin");
+import fp from "fastify-plugin";
 
 async function authenticationDecorators(fastify, options) {
   fastify.decorate("verifyUserSession", function (request, reply, done) {
@@ -12,4 +12,4 @@ async function authenticationDecorators(fastify, options) {
   });
 }
 
-module.exports = fp(authenticationDecorators);
+export default fp(authenticationDecorators);

@@ -1,4 +1,4 @@
-const fp = require("fastify-plugin");
+import fp from "fastify-plugin";
 
 async function authorizationDecorators(fastify, options) {
   // Common function to validate membership
@@ -46,4 +46,4 @@ async function authorizationDecorators(fastify, options) {
   );
 }
 
-module.exports = fp(authorizationDecorators);
+export default fp(authorizationDecorators);

@@ -1,4 +1,4 @@
-module.exports = async function (fastify, options) {
+export default async function (fastify, options) {
   fastify.post(
     "/",
     {
@@ -76,4 +76,4 @@ module.exports = async function (fastify, options) {
       }
     }
   );
-};
+}

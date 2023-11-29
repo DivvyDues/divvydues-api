@@ -1,4 +1,4 @@
-module.exports = async function (fastify, options) {
+export default async function (fastify, options) {
   fastify.patch(
     "/",
     {
@@ -32,4 +32,4 @@ module.exports = async function (fastify, options) {
       }
     }
   );
-};
+}

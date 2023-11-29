@@ -1,4 +1,4 @@
-module.exports = async function (fastify, options) {
+export default async function (fastify, options) {
   fastify.post(
     "/",
     { onRequest: [fastify.verifyUserSession, fastify.csrfProtection] },
@@ -57,4 +57,4 @@ module.exports = async function (fastify, options) {
       }
     }
   );
-};
+}

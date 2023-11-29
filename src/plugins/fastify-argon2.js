@@ -1,5 +1,5 @@
-const fp = require("fastify-plugin");
-const argon2 = require("argon2");
+import fp from "fastify-plugin";
+import argon2 from "argon2";
 
 async function argon2Plugin(fastify, options) {
   fastify.decorate("argon2", {
@@ -12,4 +12,4 @@ async function argon2Plugin(fastify, options) {
   });
 }
 
-module.exports = fp(argon2Plugin);
+export default fp(argon2Plugin);

@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Divvydues project API",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node src/app.js",
     "start:dev": "node --watch src/app.js | pino-pretty",

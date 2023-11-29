@@ -1,33 +1,49 @@
-require("dotenv").config(); //TODO Research safer alternatives for production code
-const path = require("path");
+// Importing environment variables
+import dotenv from "dotenv";
+dotenv.config(); // Research safer alternatives for production code
 
-const fastify = require("fastify")({ logger: true });
-const autoload = require("@fastify/autoload");
+import path from "path";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
+import Fastify from "fastify";
+import Autoload from "@fastify/autoload";
+import Helmet from "@fastify/helmet";
+import Cookie from "@fastify/cookie";
+import Session from "@fastify/session";
+import Csrf from "@fastify/csrf-protection";
+
+// ESM-specific adjustments
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+// Initialize Fastify instance
+const fastify = Fastify({ logger: true });
 
 // Register Core plugins
-fastify.register(require("@fastify/helmet", { global: true })); //TODO Set appropriate rules for REST API
-fastify.register(require("@fastify/cookie"));
-fastify.register(require("@fastify/session"), {
-  //TODO Use Redis for production code
-  cookie: { secure: false }, //TODO mechanism to set to true in prod
+fastify.register(Helmet, { global: true }); // Set appropriate rules for REST API
+fastify.register(Cookie);
+fastify.register(Session, {
+  cookie: { secure: false }, // Mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
 });
-fastify.register(require("@fastify/csrf-protection"), {
+fastify.register(Csrf, {
   sessionPlugin: "@fastify/session",
 });
 
-fastify.register(autoload, {
-  dir: path.join(__dirname, "plugins"),
+// Autoload plugins and routes
+fastify.register(Autoload, {
+  dir: join(__dirname, "plugins"),
 });
 
-fastify.register(autoload, {
-  dir: path.join(__dirname, "routes"),
+fastify.register(Autoload, {
+  dir: join(__dirname, "routes"),
   routeParams: true,
 });
 
+// Start the server
 const start = async () => {
   try {
-    await fastify.listen({ port: 3000 }); //TODO add mechanism to change port for production
+    await fastify.listen({ port: 3000 }); // Add mechanism to change port for production
     console.log(`Server is listening on ${fastify.server.address().port}`);
   } catch (err) {
     fastify.log.error(err);

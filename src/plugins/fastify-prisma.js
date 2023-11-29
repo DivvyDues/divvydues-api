@@ -1,5 +1,5 @@
-const { PrismaClient } = require("@prisma/client");
-const fp = require("fastify-plugin");
+import { PrismaClient } from "@prisma/client";
+import fp from "fastify-plugin";
 
 async function prismaPlugin(fastify, options) {
   const prisma = new PrismaClient();
@@ -7,4 +7,4 @@ async function prismaPlugin(fastify, options) {
   fastify.decorate("prisma", prisma);
 }
 
-module.exports = fp(prismaPlugin);
+export default fp(prismaPlugin);
