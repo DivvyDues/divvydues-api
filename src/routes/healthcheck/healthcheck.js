@@ -1,5 +1,5 @@
 module.exports = async function (fastify, options) {
-  fastify.get("/healthcheck", async (request, reply) => {
+  fastify.get("/", async (request, reply) => {
     return "OK";
   });
 };

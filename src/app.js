@@ -22,7 +22,11 @@ fastify.register(autoload, {
 
 fastify.register(autoload, {
   dir: path.join(__dirname, "routes"),
-  dirNameRoutePrefix: false,
+  routeParams: true,
+});
+
+fastify.ready(() => {
+  console.log(fastify.printRoutes());
 });
 
 const start = async () => {

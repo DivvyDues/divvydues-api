@@ -1,6 +1,6 @@
 module.exports = async function (fastify, options) {
   fastify.post(
-    "/expense-sheets/:expenseSheetId/categories",
+    "/",
     {
       onRequest: [
         fastify.verifyUserSession,
@@ -32,7 +32,7 @@ module.exports = async function (fastify, options) {
   );
 
   fastify.get(
-    "/expense-sheets/:expenseSheetId/categories",
+    "/",
     {
       onRequest: [
         fastify.verifyUserSession,
