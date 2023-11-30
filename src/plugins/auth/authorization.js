@@ -1,6 +1,6 @@
 import fp from "fastify-plugin";
 
-async function authorizationDecorators(fastify, options) {
+export default fp(async function (fastify, options) {
   // Common function to validate membership
   async function validateMembership(expenseSheetId, userIds) {
     const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
@@ -44,6 +44,4 @@ async function authorizationDecorators(fastify, options) {
       }
     }
   );
-}
-
-export default fp(authorizationDecorators);
+});

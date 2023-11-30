@@ -1,7 +1,7 @@
 import fp from "fastify-plugin";
 import argon2 from "argon2";
 
-async function argon2Plugin(fastify, options) {
+export default fp(async function (fastify, options) {
   fastify.decorate("argon2", {
     hash: async (password) => {
       return await argon2.hash(password);
@@ -10,6 +10,4 @@ async function argon2Plugin(fastify, options) {
       return await argon2.verify(hash, password);
     },
   });
-}
-
-export default fp(argon2Plugin);
+});
