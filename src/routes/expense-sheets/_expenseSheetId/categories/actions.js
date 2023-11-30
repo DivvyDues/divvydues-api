@@ -1,3 +1,4 @@
+//TODO Add validation schema
 export default async function (fastify, options) {
   fastify.post(
     "/",
