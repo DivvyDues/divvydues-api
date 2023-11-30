@@ -1,7 +1,10 @@
 export default async function (fastify, options) {
   fastify.post("/register", async (request, reply) => {
     const { username, password } = request.body;
-    //TODO Add rules for secure passwords
+
+    if (!(password.length >= 8 && password.length <= 40)) {
+      return reply.badRequest("Password must be between 8 and 40 characters");
+    }
 
     try {
       const hashedPassword = await fastify.argon2.hash(password);
@@ -14,6 +17,9 @@ export default async function (fastify, options) {
 
       return { id: user.id, username: user.username };
     } catch (error) {
+      if (error.code === "P2002") {
+        return reply.badRequest("User already exists");
+      }
       return reply.internalServerError();
     }
   });
