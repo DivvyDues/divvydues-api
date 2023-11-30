@@ -43,6 +43,11 @@ fastify.register(Autoload, {
 });
 
 fastify.register(Autoload, {
+  dir: join(__dirname, "shared-schemas"),
+  routeParams: true,
+});
+
+fastify.register(Autoload, {
   dir: join(__dirname, "routes"),
   routeParams: true,
 });

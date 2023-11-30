@@ -13,14 +13,7 @@ export default async function (fastify, options) {
           required: ["title"],
         },
         response: {
-          200: {
-            type: "object",
-            properties: {
-              id: { type: "string" },
-              title: { type: "string" },
-              createdAt: { type: "string" },
-            },
-          },
+          200: { $ref: "ExpenseSheet" },
           400: { $ref: "HttpError" },
           500: { $ref: "HttpError" },
         },
@@ -60,7 +53,15 @@ export default async function (fastify, options) {
 
   fastify.get(
     "/",
-    { onRequest: [fastify.verifyUserSession, fastify.csrfProtection] },
+    {
+      onRequest: [fastify.verifyUserSession, fastify.csrfProtection],
+      schema: {
+        response: {
+          200: { type: "array", items: { $ref: "ExpenseSheet" } },
+          500: { $ref: "HttpError" },
+        },
+      },
+    },
     async (request, reply) => {
       const userId = request.session.user.id;
 
