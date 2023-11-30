@@ -31,9 +31,11 @@ fastify.register(Session, {
   rolling: false,
   saveUninitialized: false,
 });
+
 fastify.register(Csrf, {
   sessionPlugin: "@fastify/session",
-});
+  getToken: (req) => req.headers["x-csrf-token"],
+}); //TODO Research cookie tossing and getUserInfo option
 
 // Autoload plugins and routes
 fastify.register(Autoload, {
