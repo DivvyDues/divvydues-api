@@ -1,7 +1,31 @@
 export default async function (fastify, options) {
   fastify.post(
     "/",
-    { onRequest: [fastify.verifyUserSession, fastify.csrfProtection] },
+    {
+      onRequest: [fastify.verifyUserSession, fastify.csrfProtection],
+      schema: {
+        body: {
+          type: "object",
+          properties: {
+            title: { type: "string" },
+          },
+          additionalProperties: false,
+          required: ["title"],
+        },
+        response: {
+          200: {
+            type: "object",
+            properties: {
+              id: { type: "string" },
+              title: { type: "string" },
+              createdAt: { type: "string" },
+            },
+          },
+          400: { $ref: "HttpError" },
+          500: { $ref: "HttpError" },
+        },
+      },
+    },
     async (request, reply) => {
       const { title } = request.body;
       const userId = request.session.user.id;
