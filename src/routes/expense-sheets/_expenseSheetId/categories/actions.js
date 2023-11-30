@@ -26,7 +26,7 @@ export default async function (fastify, options) {
 
         return expenseSheetCategory;
       } catch (error) {
-        reply.status(500).send({ error: error.message }); //TODO remove backend error messages
+        return reply.internalServerError();
       }
     }
   );
@@ -49,7 +49,7 @@ export default async function (fastify, options) {
         });
         return categories;
       } catch (error) {
-        reply.status(500).send({ error: error.message }); //TODO remove backend error messages
+        return reply.internalServerError();
       }
     }
   );

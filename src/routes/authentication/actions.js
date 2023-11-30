@@ -14,11 +14,10 @@ export default async function (fastify, options) {
 
       return { id: user.id, username: user.username };
     } catch (error) {
-      reply.status(500).send({ error: error.message }); //TODO remove backend error messages
+      return reply.internalServerError();
     }
   });
 
-  // User Login Endpoint
   fastify.post("/login", async (request, reply) => {
     const { username, password } = request.body;
 
@@ -32,22 +31,18 @@ export default async function (fastify, options) {
           .send({ error: "Invalid username or password" });
       }
 
-      // Set up user session
+      // Set up user session and csrf token
       request.session.user = { id: user.id, username: user.username };
+      request.session.authenticated = true;
       const csrfToken = await reply.generateCsrf();
       return { csrfToken };
     } catch (error) {
-      reply.status(500).send({ error: error.message });
+      return reply.internalServerError();
     }
   });
 
-  // User Logout Endpoint
   fastify.post("/logout", async (request, reply) => {
-    request.session.destroy((err) => {
-      if (err) {
-        return reply.status(500).send({ error: "Failed to log out" });
-      }
-      reply.send({ message: "Logged out successfully" });
-    });
+    await request.session.destroy();
+    return "Logout succesful";
   });
 }

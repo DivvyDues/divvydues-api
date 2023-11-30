@@ -1,8 +1,7 @@
 import fp from "fastify-plugin";
 
 export default fp(async function (fastify, options) {
-  // Common function to validate membership
-  async function validateMembership(expenseSheetId, userIds) {
+  const validateMembership = async (expenseSheetId, userIds) => {
     const expenseSheet = await fastify.prisma.expenseSheet.findUnique({
       where: { id: parseInt(expenseSheetId) },
       include: { members: true },
@@ -14,7 +13,7 @@ export default fp(async function (fastify, options) {
 
     const memberIds = expenseSheet.members.map((member) => member.id);
     return userIds.every((id) => memberIds.includes(id));
-  }
+  };
 
   fastify.decorate(
     "verifyUserIsExpenseSheetMember",
@@ -23,8 +22,7 @@ export default fp(async function (fastify, options) {
       const { expenseSheetId } = request.params;
 
       if (!(await validateMembership(expenseSheetId, [userId]))) {
-        reply.code(403);
-        throw new Error("User is not a member of the expense sheet");
+        return reply.forbidden("User is not a member of the expense sheet");
       }
     }
   );
@@ -37,8 +35,7 @@ export default fp(async function (fastify, options) {
 
       const userIds = [payerId, ...beneficiaryIds];
       if (!(await validateMembership(expenseSheetId, userIds))) {
-        reply.code(403);
-        throw new Error(
+        return reply.forbidden(
           "Payer and all beneficiaries must be members of the expense sheet"
         );
       }

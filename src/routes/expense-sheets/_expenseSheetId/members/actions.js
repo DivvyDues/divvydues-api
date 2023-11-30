@@ -25,9 +25,9 @@ export default async function (fastify, options) {
         return updatedExpenseSheet;
       } catch (error) {
         if (error.code === "P2025") {
-          reply.status(400).send({ error: "Invalid members provided" });
+          return reply.badRequest("Invalid members provided");
         } else {
-          reply.status(500).send({ error });
+          return reply.internalServerError();
         }
       }
     }

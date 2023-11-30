@@ -20,12 +20,16 @@ const __dirname = dirname(__filename);
 const fastify = Fastify({ logger: true });
 
 // Register Core plugins
-fastify.register(Sensible);
+fastify.register(Sensible, {
+  sharedSchemaId: "HttpError",
+});
 fastify.register(Helmet, { global: true }); // Set appropriate rules for REST API
 fastify.register(Cookie);
 fastify.register(Session, {
   cookie: { secure: false }, // Mechanism to set to true in prod
   secret: process.env.SESSION_SECRET,
+  rolling: false,
+  saveUninitialized: false,
 });
 fastify.register(Csrf, {
   sessionPlugin: "@fastify/session",

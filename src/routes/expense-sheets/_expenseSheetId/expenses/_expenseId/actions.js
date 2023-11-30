@@ -46,7 +46,7 @@ export default async function (fastify, options) {
 
         return updatedExpense;
       } catch (error) {
-        reply.status(500).send({ error: error.message }); //TODO Remove backend error messages
+        return reply.internalServerError();
       }
     }
   );

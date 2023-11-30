@@ -40,7 +40,7 @@ export default async function (fastify, options) {
 
         return newExpense;
       } catch (error) {
-        reply.status(500).send({ error: error.message }); //TODO Remove backend error messages
+        return reply.internalServerError();
       }
     }
   );
@@ -72,7 +72,7 @@ export default async function (fastify, options) {
 
         return expenses;
       } catch (error) {
-        reply.status(500).send({ error: error.message }); //TODO Remove backend error messages
+        return reply.internalServerError();
       }
     }
   );

@@ -29,7 +29,7 @@ export default async function (fastify, options) {
 
         return expenseSheet;
       } catch (error) {
-        reply.status(500).send({ error: error.message });
+        return reply.internalServerError();
       }
     }
   );
@@ -53,7 +53,7 @@ export default async function (fastify, options) {
 
         return expenseSheets;
       } catch (error) {
-        reply.status(500).send({ error: error.message });
+        return reply.internalServerError();
       }
     }
   );
